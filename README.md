@@ -1,7 +1,7 @@
 # Runik MySQL Backup Manager
 Like MySQL Dumper: Big Data Backup and Restore.
 
-![Runik MySQL Backup](screenshots/dashboard.png)
+![Runik MySQL Backup](https://hucrem.com)
 
 A powerful, modern and user-friendly MySQL backup & restore manager built with PHP. Features a clean AdminLTE interface, multi-language support, and high-performance backup/restore capabilities for large databases.
 
