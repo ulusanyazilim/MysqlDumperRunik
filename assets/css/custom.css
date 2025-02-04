@@ -1,0 +1,68 @@
+.restore-status {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.status-item label {
+    font-weight: bold;
+    color: #666;
+}
+
+.status-item span {
+    color: #333;
+}
+
+.progress {
+    height: 25px;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    background-color: #28a745;
+    transition: width 0.3s ease;
+}
+
+.sidebar-custom {
+    position: fixed;
+    bottom: 1rem;
+    left: 0;
+    right: 0;
+    padding: 0 1rem;
+    max-width: 250px;
+}
+
+.opacity-50 {
+    opacity: 0.5;
+}
+
+#language_select {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+#language_select option {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.sidebar label {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+} 
