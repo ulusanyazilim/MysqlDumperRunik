@@ -1,0 +1,39 @@
+# Backup files
+/backups/*
+!/backups/.gitkeep
+
+# Screenshots (optional, if you want to include them in repo)
+# /screenshots/*
+# !/screenshots/.gitkeep
+
+# Logs
+*.log
+
+# IDE specific files
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# Composer
+/vendor/
+composer.lock
+
+# Node modules (if any)
+node_modules/
+package-lock.json

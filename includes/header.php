@@ -8,7 +8,10 @@ if (isset($_POST['language'])) {
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit;
 }
-
+if (!file_exists(__DIR__ . '/../app/config/install.php')) {
+    header('Location: install');
+    exit;
+}
 require_once __DIR__ . '/../app/config/config.php';
 require_once __DIR__ . '/../app/models/Database.php';
 require_once __DIR__ . '/../app/models/Language.php';
