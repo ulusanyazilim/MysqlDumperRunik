@@ -13,7 +13,7 @@ $currentLang = $_SESSION['language'] ?? DEFAULT_LANGUAGE;
 Language::init($currentLang);
 
 if (file_exists('../app/config/installed.php')) {
-    header('Location: ../index.php');
+    header('Location: ../login.php');
     exit;
 }
 
@@ -48,7 +48,7 @@ $formData = $_SESSION['form_data'] ?? [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    switch($step) {
+    switch ($step) {
         case 1:
             if (isset($_POST['language'])) {
                 $_SESSION['step'] = 2;
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
             break;
-            
+
         case 2:
             // Veritabanı bilgilerini test et ve kaydet
             if (!isset($_POST['back'])) { // Geri butonuna basılmadıysa devam et
@@ -64,24 +64,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $dbuser = $_POST['dbuser'];
                 $dbpass = $_POST['dbpass'];
                 $dbname = $_POST['dbname'];
-                
+
                 try {
                     $conn = new PDO("mysql:host=$dbhost", $dbuser, $dbpass);
                     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                    
+
                     // Veritabanını oluştur veya kontrol et
                     $conn->exec("CREATE DATABASE IF NOT EXISTS `$dbname`");
                     $conn->exec("USE `$dbname`");
-                    
+
                     // Config dosyasını güncelle
                     $config = file_get_contents('../app/config/config.php');
                     $config = str_replace("define('DB_HOST', '');", "define('DB_HOST', '$dbhost');", $config);
                     $config = str_replace("define('DB_USER', '');", "define('DB_USER', '$dbuser');", $config);
                     $config = str_replace("define('DB_PASS', '');", "define('DB_PASS', '$dbpass');", $config);
                     $config = str_replace("define('DB_NAME', '');", "define('DB_NAME', '$dbname');", $config);
-                    
+
                     file_put_contents('../app/config/config.php', $config);
-                    
+
                     // Admin tablosunu oluştur
                     $sql = "CREATE TABLE IF NOT EXISTS admin_settings (
                         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -89,16 +89,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )";
                     $conn->exec($sql);
-                    
+
                     $_SESSION['step'] = 3;
                     header('Location: ' . $_SERVER['PHP_SELF']);
                     exit;
-                } catch(PDOException $e) {
+                } catch (PDOException $e) {
                     $error = Language::get('error_db_connection') . $e->getMessage();
                 }
             }
             break;
-            
+
         case 3:
             // Admin şifresini kaydet
             if ($_POST['password'] !== $_POST['password_confirm']) {
@@ -116,13 +116,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $config
                     );
                     file_put_contents('../app/config/config.php', $config);
-                    
+
                     // Kurulumu tamamla
                     file_put_contents('../app/config/installed.php', '<?php return true;');
-                    
-                    header('Location: ../index.php');
+
+                    header('Location: ../login.php');
                     exit;
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     $error = Language::get('error') . ': ' . $e->getMessage();
                 }
             }
@@ -133,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Runik MySQL Backup - <?php echo Language::get('installation'); ?></title>
     <meta charset="utf-8">
@@ -140,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
+
 <body class="hold-transition login-page">
     <div class="login-box" style="width: 450px;">
         <div class="card card-outline card-primary">
@@ -148,11 +150,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="card-body">
                 <p class="login-box-msg">
-                    <?php 
-                    switch($step) {
-                        case 1: echo Language::get('language_selection'); break;
-                        case 2: echo Language::get('database_settings'); break;
-                        case 3: echo Language::get('admin_password'); break;
+                    <?php
+                    switch ($step) {
+                        case 1:
+                            echo Language::get('language_selection');
+                            break;
+                        case 2:
+                            echo Language::get('database_settings');
+                            break;
+                        case 3:
+                            echo Language::get('admin_password');
+                            break;
                     }
                     ?>
                 </p>
@@ -164,13 +172,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="progress mb-3">
                     <div class="progress-bar" role="progressbar" style="width: <?php echo $step * 33.33; ?>%"></div>
                 </div>
-                
+
                 <?php if ($step === 1): ?>
                     <form method="post">
                         <div class="form-group">
                             <label id="language_label"><?php echo Language::get('select_language'); ?></label>
                             <select name="language" class="form-control" id="language_select">
-                                <?php foreach(AVAILABLE_LANGUAGES as $code => $name): ?>
+                                <?php foreach (AVAILABLE_LANGUAGES as $code => $name): ?>
                                     <option value="<?php echo $code; ?>" <?php echo $currentLang === $code ? 'selected' : ''; ?>>
                                         <?php echo $name; ?>
                                     </option>
@@ -179,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <button type="submit" class="btn btn-primary btn-block"><?php echo Language::get('next'); ?></button>
                     </form>
-                
+
                 <?php elseif ($step === 2): ?>
                     <form method="post">
                         <div class="form-group">
@@ -227,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
                         </div>
                     </form>
-                
+
                 <?php elseif ($step === 3): ?>
                     <form method="post">
                         <div class="form-group">
@@ -267,40 +275,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     <script>
-    $(document).ready(function() {
-        // Enter tuşunun davranışını düzelt
-        $('form').on('keypress', function(e) {
-            if (e.which === 13) { // Enter tuşu
-                e.preventDefault();
-                $(this).find('button[type="submit"]').not('[name="back"]').click();
-            }
-        });
-
-        // Geri butonuna tıklandığında form validasyonunu devre dışı bırak
-        $('button[name="back"]').click(function(e) {
-            $(this).closest('form').removeAttr('onsubmit');
-            $(this).closest('form').find('input, select').removeAttr('required');
-        });
-
-        // Dil değiştiğinde anlık güncelle
-        $('#language_select').change(function() {
-            var selectedLang = $(this).val();
-            $.ajax({
-                url: 'ajax_change_language.php',
-                method: 'POST',
-                data: { language: selectedLang },
-                success: function(response) {
-                    if (response.success) {
-                        // Etiketleri güncelle
-                        $('#language_label').text(response.translations.select_language);
-                        $('.login-box-msg').text(response.translations.language_selection);
-                        $('button[type="submit"]').text(response.translations.next);
-                        document.title = 'Runik MySQL Backup - ' + response.translations.installation;
-                    }
+        $(document).ready(function() {
+            // Enter tuşunun davranışını düzelt
+            $('form').on('keypress', function(e) {
+                if (e.which === 13) { // Enter tuşu
+                    e.preventDefault();
+                    $(this).find('button[type="submit"]').not('[name="back"]').click();
                 }
             });
+
+            // Geri butonuna tıklandığında form validasyonunu devre dışı bırak
+            $('button[name="back"]').click(function(e) {
+                $(this).closest('form').removeAttr('onsubmit');
+                $(this).closest('form').find('input, select').removeAttr('required');
+            });
+
+            // Dil değiştiğinde anlık güncelle
+            $('#language_select').change(function() {
+                var selectedLang = $(this).val();
+                $.ajax({
+                    url: 'ajax_change_language.php',
+                    method: 'POST',
+                    data: {
+                        language: selectedLang
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Etiketleri güncelle
+                            $('#language_label').text(response.translations.select_language);
+                            $('.login-box-msg').text(response.translations.language_selection);
+                            $('button[type="submit"]').text(response.translations.next);
+                            document.title = 'Runik MySQL Backup - ' + response.translations.installation;
+                        }
+                    }
+                });
+            });
         });
-    });
     </script>
 </body>
-</html> 
+
+</html>

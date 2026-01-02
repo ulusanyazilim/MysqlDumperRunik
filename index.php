@@ -1,12 +1,6 @@
 <?php
 require_once 'includes/header.php';
 
-// Oturum kontrolü
-if (!isset($_SESSION['admin_logged_in'])) {
-    header('Location: login.php');
-    exit;
-}
-
 // PHP Bilgileri
 $phpInfo = [
     'version' => PHP_VERSION,
